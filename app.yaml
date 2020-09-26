@@ -1,0 +1,11 @@
+# [START django_app]
+runtime: python38
+
+
+handlers:
+# This configures Google App Engine to serve the files in the app's static
+# directory.
+- url: /static
+  static_dir: static/
+
+entrypoint: gunicorn  --workers 3 main.wsgi:application

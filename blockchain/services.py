@@ -19,7 +19,7 @@ class IotaService:
         tx = ProposedTransaction(
             address = Address(address),
             message = message,
-            tag = Tag(b'TRAK9999999'),
+            tag = Tag(b'KUBERFLETE9999999'),
             value = 0
         )
         result = api.send_transfer(transfers = [tx])

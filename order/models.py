@@ -5,13 +5,16 @@ import requests
 class Callabacks(models.Model):
     url_callback = models.URLField(max_length=200)
     api_key = models.CharField(max_length=50)
+    class Meta:
+        verbose_name = "Callback"
+        verbose_name_plural = "Callbacks"
 
 class Status(models.Model):
     name = models.CharField(max_length=50)
     code = models.CharField(max_length=50)
     class Meta:
         verbose_name = "Status"
-        verbose_name_plural = "Statuss"
+        verbose_name_plural = "Status"
 
     def __str__(self):
         return self.name
@@ -52,3 +55,11 @@ class Order(models.Model):
 class OrderTrak(models.Model):
     order_id       =  models.ForeignKey(Order, on_delete=models.CASCADE)
     bk_transaction =  models.CharField(max_length=90)
+    class Meta:
+        verbose_name = "Trak"
+        verbose_name_plural = "Trak Orders"
+
+
+class SocketModel(models.Model):
+    socket_id=models.CharField(max_length=50)
+    seller_id=models.EmailField(max_length=254)
