@@ -36,9 +36,7 @@ class Socket(View):
     def delete(self, request, *args, **kwargs):
         socket_id=request.GET.get('socket_id')
         if socket_id == "all":
-            sm = SocketModel.objects.filter()
-            for s in sm:
-                s.delete()
+            sm = SocketModel.objects.all().delete()
             return JsonResponse({"delete":"all"}, status=200)
         elif socket_id:
             sm = SocketModel.objects.get(socket_id=socket_id)
@@ -92,9 +90,14 @@ class Orders(View):
     def get(self, request, *args, **kwargs):
         order_code = request.GET.get('order_code')
         seller_id=request.GET.get('seller_id')
-        if not seller_id:
-            return JsonResponse({"message":"seller_id es mandatorio"}, status=400)
-        if order_code:
+        if not seller_id and order_code:
+            try:
+                orders = Order.objects.get(order_code=order_code)
+            except Order.DoesNotExist as e:
+                return JsonResponse({"message":"no existe la order {}".format(order_code)}, status=400)
+            orders_json = model_to_dict(orders)
+            orders_json['status_code'] = orders.status.code
+        elif order_code:
             try:
                 orders = Order.objects.get(seller_id=seller_id, order_code=order_code)
             except Order.DoesNotExist as e:
@@ -123,7 +126,7 @@ class OrderGeo(View):
         for order in orders:
             kmtrs = distance(lat, lon, order.lat, order.log)
             if distance(lat, lon, order.lat, order.log) <= 1:
-                callback(order.order_code, "el pedido esta a kmtrs: {}".format(kmtrs))
+                callback(order.order_code, str(kmtrs))
                 
             order_trak = OrderTrak(order_id=order, bk_transaction=iota_response['bundle'].tail_transaction.hash)
             order_trak.save()

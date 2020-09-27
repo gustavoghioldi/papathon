@@ -31,5 +31,6 @@ def callback(order_code, messaje):
             headers=headers,
             json={
                 "order_code": order_code,
+                "action":"near",
                 "message":messaje
              })

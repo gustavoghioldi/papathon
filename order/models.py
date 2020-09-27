@@ -45,7 +45,8 @@ class Order(models.Model):
             requests.request('POST', cb.url_callback,
             headers=headers,
             json={
-                "order_code": self.order_code
+                "order_code": self.order_code,
+                "action":"mutation"
              })
         super(Order, self).save(*args, **kwargs)
     
