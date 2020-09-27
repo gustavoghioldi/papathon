@@ -1,5 +1,7 @@
 from django.db import models
 import requests
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 class Callabacks(models.Model):
@@ -34,21 +36,22 @@ class Order(models.Model):
     class Meta:
         verbose_name = "Order"
         verbose_name_plural = "Orders"
+    
 
-    def save(self, *args, **kwargs):
-        callbacks = Callabacks.objects.filter()
-        for cb in callbacks:
-            headers = {
-            'content-type': "application/json",
-            'x-api-key': cb.api_key,
-            }
-            requests.request('POST', cb.url_callback,
-            headers=headers,
-            json={
-                "order_code": self.order_code,
-                "action":"mutation"
-             })
-        super(Order, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     callbacks = Callabacks.objects.filter()
+    #     for cb in callbacks:
+    #         headers = {
+    #         'content-type': "application/json",
+    #         'x-api-key': cb.api_key,
+    #         }
+    #         requests.request('POST', cb.url_callback,
+    #         headers=headers,
+    #         json={
+    #             "order_code": self.order_code,
+    #             "action":"mutation"
+    #          })
+    #     super(Order, self).save(*args, **kwargs)
     
     def __str__(self):
         return self.order_code
@@ -64,3 +67,18 @@ class OrderTrak(models.Model):
 class SocketModel(models.Model):
     socket_id=models.CharField(max_length=50)
     seller_id=models.EmailField(max_length=254)
+
+# @receiver(post_save, sender=Order, dispatch_uid="update_order")
+# def update_order(sender, instance, **kwargs):
+#     callbacks = Callabacks.objects.filter()
+#     for cb in callbacks:
+#         headers = {
+#         'content-type': "application/json",
+#         'x-api-key': cb.api_key,
+#         }
+#         requests.request('POST', cb.url_callback,
+#         headers=headers,
+#         json={
+#             "order_code": instance.order_code,
+#             "action":"mutation"
+#          })

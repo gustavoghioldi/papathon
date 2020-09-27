@@ -125,8 +125,8 @@ class OrderGeo(View):
         
         for order in orders:
             kmtrs = distance(lat, lon, order.lat, order.log)
-            if distance(lat, lon, order.lat, order.log) <= 1:
-                callback(order.order_code, str(kmtrs))
+            if distance(lat, lon, order.lat, order.log) <= 1 and order.status.code!='COMPLETE':
+                callback(order, str(kmtrs))
                 
             order_trak = OrderTrak(order_id=order, bk_transaction=iota_response['bundle'].tail_transaction.hash)
             order_trak.save()
@@ -144,3 +144,10 @@ class OrderGeo(View):
             return JsonResponse({"message":"la orden no esta trakeada"}, status=400)
         resp = (IotaService.retrive(order_trak.last().bk_transaction))
         return JsonResponse(resp, status=200)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class Sender(View):
+    def post(self, request, *args, **kwargs):
+        request_body = json.loads(request.body)
+        print("envio de mensaje {}".format(request_body))
+        return JsonResponse({"message":"mensaje enviado"}, status=200)

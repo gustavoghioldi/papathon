@@ -20,7 +20,7 @@ def distance(lat1, lon1, lat2, lon2):
 
     return distance
 
-def callback(order_code, messaje):
+def callback(order, messaje):
     callbacks = Callabacks.objects.filter()
     for cb in callbacks:
         headers = {
@@ -30,7 +30,18 @@ def callback(order_code, messaje):
         requests.request('POST', cb.url_callback,
             headers=headers,
             json={
-                "order_code": order_code,
+                "order_code": order.order_code,
                 "action":"near",
-                "message":messaje
+                "distance":messaje,
+                "order": {
+                    "order_code": order.order_code,
+                    "seller_id":order.seller_id,
+                    "order_details":order.order_details,
+                    "client_id":order.client_id,
+                    "lat":float(order.lat),
+                    "log":float(order.log),
+                    "trak_id":order.trak_id,
+                    "order_status":order.status.code,
+                    "action":"near"
+                }
              })

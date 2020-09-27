@@ -1,5 +1,5 @@
 from django.urls import path
-from .services import HealthCheck, OrderStatus, Orders, OrderGeo, Info,AssignCurrier, Socket
+from .services import HealthCheck, OrderStatus, Orders, OrderGeo, Info,AssignCurrier, Socket, Sender
 
 urlpatterns = [
     path('health-check/', HealthCheck.as_view(), name="api-health-check"),
@@ -9,4 +9,5 @@ urlpatterns = [
     path('order/assign-currier', AssignCurrier.as_view(), name="api-assign-trak"),
     path('info/', Info.as_view(), name="api-info"),
     path('socket/', Socket.as_view(), name="api-socket"),
+    path('send/sms/',Sender.as_view(), name="api-sender"),
 ]
